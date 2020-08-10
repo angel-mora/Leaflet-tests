@@ -65,7 +65,7 @@ Give a ⭐️ if you like this project!
 - Jorge Fernando
 - Diego Valle
 - Microverse
-- ¡Viva México! 🇲🇽
+- ¡Viva México! :mexico:
 
 ## 📝 License
 
