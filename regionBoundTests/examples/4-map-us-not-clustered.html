@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>2991 random US locations</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="locations/US-2991.txt"></script>
+  <script>
+    var urlTemplate = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png'
+    var attribution = '<a href="https://maps.wikimedia.org">Wikimedia maps</a> | Map data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contr.'
+
+    function createMap (mapId) {
+      var map = L.map(mapId).setView([41, -95], 4);
+
+      L.tileLayer(urlTemplate, {attribution: attribution, minZoom: 1, maxZoom: 17}).addTo(map);
+
+      for (var i = 0; i < locations.length; i++) {
+        var latitude = locations[i][0];
+        var longitude = locations[i][1];
+        var state = locations[i][2];
+        var city = locations[i][3];
+        var zip = locations[i][4];
+
+        var marker = new L.marker([latitude, longitude]);
+ 
+        marker.bindPopup(city + ', ' + state + ' ' + zip);
+
+        map.addLayer(marker);
+      }
+    }
+  </script>
+  <style>
+    .map { height: 600px; }
+  </style>
+</head>
+<body>
+  <h1>2991 random US locations - not clustered</h1>
+  <div class="map" id="map-us"></div>
+  <script>
+    createMap('map-us');
+  </script>
+</body>
+</html>

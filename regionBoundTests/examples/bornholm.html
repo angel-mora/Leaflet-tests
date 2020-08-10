@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>RegionBound marker clustering on Bornholm addresses</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="../dist/MarkerCluster.Default.css"/>
+  <link rel="stylesheet" href="../dist/MarkerCluster.css"/>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css'/>
+
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="../dist/leaflet.markercluster-regionbound.min.js"></script>
+  <script src="locations/bornholm.txt"></script>
+  <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+  <script>
+    const urlTemplate = 'https://mt{s}.googleapis.com/vt?lyrs=t,r&x={x}&y={y}&z={z}&style=high_dpi'
+    const attribution = 'Map data &copy; <a target="attr" href="https://googlemaps.com">Google</a>';
+    // Associate each of the available zoom levels (0-18) with a region level (0-4).
+    const regionLevels = [
+      0, // world
+      0, // continent
+      1, // country
+      1,
+      2, // state
+      2,
+      2,
+      2,
+      2,
+      3, // city
+      3,
+      3,
+      3,
+      3,
+      4, // ZIP
+      4,
+      4,
+      4,
+      4
+    ];
+
+    function createMap (mapId, regionLevels) {
+      const map = L.map(mapId, {fullscreenControl: true}).setView([55.1, 15], 8);
+
+      L.tileLayer(urlTemplate, {subdomains: [0, 1, 2, 3], attribution: attribution, minZoom: 1, maxZoom: 17}).addTo(map);
+
+      const clusterOptions = { 
+        regionLevels: regionLevels,
+        maxClusterRadius: 200,
+        addRegionToolTips: true,
+        allowClustersOfOne: false,
+        hullHugFactor: 'auto',
+        polygonOptions: {
+          color: 'blue', // default: '#0033ff'
+          weight: 4, // default: 5
+          opacity: 0.6, // default: 0.5
+          fill: true,
+          fillColor: 'white', // default: same as color
+          fillOpacity: 0.4, // default: 0.2
+          lineCap: 'round',
+          lineJoin: 'round'
+        }
+      };
+      const clusterGroup = new L.MarkerClusterGroup(clusterOptions);
+
+      // locations array is organised as follows:
+      // latitude, longitude, postcode, street, house number, suburb/town
+   
+      for (let i = 0; i < locations.length; i++) {
+        const latitude = locations[i][0];
+        const longitude = locations[i][1];
+        const postcode = locations[i][2];
+        const street = locations[i][3];
+        const houseNumber = locations[i][4];
+        const suburb = locations[i][5] || '?';
+
+        // Should use real name here. Also for Denmark's 5 regions.
+        const province = Math.trunc(postcode / 100);
+
+        // Regions are ordered big to small: world, country, province, postcode.
+        const markerOptions = {regions: ["", "Denmark",/*region,*/ province, postcode, suburb]};
+
+        const marker = new L.marker([latitude, longitude], markerOptions);
+ 
+        marker.bindPopup(street + ' ' + houseNumber + ', ' + suburb + ' ' + postcode);
+
+        clusterGroup.addLayer(marker);
+      }
+      map.addLayer(clusterGroup);
+    }
+  </script>
+  <style>
+    .map { height: 550px; }
+  </style>
+</head>
+<body>
+  <h1>RegionBound marker clustering on Bornholm addresses</h1>
+  <div class="map" id="bornholm-test"></div>
+  <script>
+    createMap('bornholm-test', regionLevels);
+  </script>
+</body>
+</html>

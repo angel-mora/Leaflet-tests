@@ -1,0 +1,63 @@
+	/*
+  	Flaticon icon font: Flaticon
+  */
+
+@font-face {
+  font-family: "Flaticon";
+  src: url("./Flaticon.eot");
+  src: url("./Flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./Flaticon.woff") format("woff"),
+       url("./Flaticon.ttf") format("truetype"),
+       url("./Flaticon.svg#Flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "Flaticon";
+    src: url("./Flaticon.svg#Flaticon") format("svg");
+  }
+}
+
+[class^="flaticon-"]:before, [class*=" flaticon-"]:before,
+[class^="flaticon-"]:after,  [class*=" flaticon-"]:after {   
+  font-family: Flaticon;
+  font-size: 20px;
+  font-style: normal;
+  margin-left: 20px;
+}
+
+.flaticon-autobox:before { content: "\f100"; }
+.flaticon-balloon:before { content: "\f101"; }
+.flaticon-building-truck:before { content: "\f102"; }
+.flaticon-bus:before { content: "\f103"; }
+.flaticon-car:before { content: "\f104"; }
+.flaticon-cargo-bicycle:before { content: "\f105"; }
+.flaticon-cement-truck:before { content: "\f106"; }
+.flaticon-crane-truck:before { content: "\f107"; }
+.flaticon-cycle:before { content: "\f108"; }
+.flaticon-drone:before { content: "\f109"; }
+.flaticon-gps:before { content: "\f10a"; }
+.flaticon-home:before { content: "\f10b"; }
+.flaticon-large-truck:before { content: "\f10c"; }
+.flaticon-lightbulb:before { content: "\f10d"; }
+.flaticon-medical:before { content: "\f10e"; }
+.flaticon-medium-truck:before { content: "\f10f"; }
+.flaticon-mini-bus:before { content: "\f110"; }
+.flaticon-mobile-sms:before { content: "\f111"; }
+.flaticon-poi:before { content: "\f112"; }
+.flaticon-route:before { content: "\f113"; }
+.flaticon-scooter:before { content: "\f114"; }
+.flaticon-security:before { content: "\f115"; }
+.flaticon-small-truck:before { content: "\f116"; }
+.flaticon-store:before { content: "\f117"; }
+.flaticon-tanker-truck:before { content: "\f118"; }
+.flaticon-taxi:before { content: "\f119"; }
+.flaticon-telegram-logo:before { content: "\f11a"; }
+.flaticon-tipper-truck:before { content: "\f11b"; }
+.flaticon-tow-truck:before { content: "\f11c"; }
+.flaticon-tuk-tuk:before { content: "\f11d"; }
+.flaticon-van:before { content: "\f11e"; }
+.flaticon-whatsapp-logo:before { content: "\f11f"; }
+.flaticon-xtra-large-truck:before { content: "\f120"; }

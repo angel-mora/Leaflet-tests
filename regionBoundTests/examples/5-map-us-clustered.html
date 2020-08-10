@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Standard marker clustering on 2991 random US locations</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="../dist/MarkerCluster.Default.css"/>
+  <link rel="stylesheet" href="../dist/MarkerCluster.css"/>
+  
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="../dist/leaflet.markercluster-regionbound.min.js"></script>
+  <script src="locations/US-2991.txt"></script>
+  <script>
+    var urlTemplate = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png'
+    var attribution = '<a href="https://maps.wikimedia.org">Wikimedia maps</a> | Map data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contr.'
+
+    function createMap (mapId) {
+      var map = L.map(mapId).setView([41, -95], 4);
+
+      L.tileLayer(urlTemplate, {attribution: attribution, minZoom: 1, maxZoom: 17}).addTo(map);
+
+      var clusterOptions = { 
+        maxClusterRadius: 130,
+        addRegionToolTips: true,
+        allowClustersOfOne: false,
+      };
+      var clusterGroup = new L.MarkerClusterGroup(clusterOptions);
+
+      for (var i = 0; i < locations.length; i++) {
+        var latitude = locations[i][0];
+        var longitude = locations[i][1];
+        var state = locations[i][2];
+        var city = locations[i][3];
+        var zip = locations[i][4];
+
+        var marker = new L.marker([latitude, longitude]);
+ 
+        marker.bindPopup(city + ', ' + state + ' ' + zip);
+
+        clusterGroup.addLayer(marker);
+      }
+      map.addLayer(clusterGroup);
+    }
+  </script>
+  <style>
+    .map { height: 600px; }
+  </style>
+</head>
+<body>
+  <h1>Standard (not region-aware) marker clustering on 2991 random US locations</h1>
+  <div class="map" id="map-us-clustered-std"></div>
+  <script>
+    createMap('map-us-clustered-std');
+  </script>
+</body>
+</html>

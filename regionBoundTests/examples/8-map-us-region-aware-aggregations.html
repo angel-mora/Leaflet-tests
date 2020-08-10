@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Region-aware marker clustering with aggregations</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="../dist/MarkerCluster.Default.css"/>
+  <link rel="stylesheet" href="../dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="../dist/MarkerCluster.Aggregations.css"/>
+  <link rel='stylesheet' href='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/leaflet.fullscreen.css'/>
+
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="../dist/leaflet.markercluster-regionbound.min.js"></script>
+  <script src="locations/US-2991.txt"></script>
+  <script src='https://api.mapbox.com/mapbox.js/plugins/leaflet-fullscreen/v1.0.1/Leaflet.fullscreen.min.js'></script>
+  <script>
+    var urlTemplate = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png'
+    var attribution = '<a href="https://maps.wikimedia.org">Wikimedia maps</a> | Map data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contr.'
+
+    // Optional
+    // Associate each of the available zoom levels (0-18) with a region level (0-4).
+    var regionLevels = [
+      0, // world
+      0, // continent
+      1, // country
+      1,
+      2, // state
+      2,
+      2,
+      2,
+      2,
+      3, // city
+      3,
+      3,
+      3,
+      3,
+      4, // ZIP
+      4,
+      4,
+      4,
+      4
+    ];
+
+    function createMap (mapId, regionLevels) {
+      var map = L.map(mapId, {fullscreenControl: true}).setView([41, -95], 4);
+
+      L.tileLayer(urlTemplate, {attribution: attribution, minZoom: 1, maxZoom: 17}).addTo(map);
+
+      var clusterOptions = { 
+        regionLevels: regionLevels,
+        maxClusterRadius: 130,
+        addRegionToolTips: true,
+        allowClustersOfOne: true,
+        clusterAggregationFunction: 'average', // or 'sum', 'minimum', 'maximum'
+        clusterAggregateRanges: {'small': 150, 'medium': 200, 'large': 250,},
+        clusterAggregatePrecision: 3,
+        hullHugFactor: 'auto',
+      };
+      var clusterGroup = new L.MarkerClusterGroup(clusterOptions);
+
+      for (var i = 0; i < locations.length; i++) {
+        var latitude = locations[i][0];
+        var longitude = locations[i][1];
+        var state = locations[i][2];
+        var city = locations[i][3];
+        var zip = locations[i][4];
+        var saleValue = 50 + Math.floor(200 * Math.random());
+        if (longitude < -115 || longitude > -85) saleValue += 80;
+        // Regions are ordered big to small: world, country, state, city, ZIP.
+        var markerOptions = {
+          regions: ["", "USA", state, city, zip], 
+          aggregationValue: saleValue
+        }
+
+        var marker = new L.marker([latitude, longitude], markerOptions);
+ 
+        marker.bindPopup(city + ', ' + state + ' ' + zip);
+
+        clusterGroup.addLayer(marker);
+      }
+      map.addLayer(clusterGroup);
+    }
+  </script>
+  <style>
+    .map { height: 600px; }
+  </style>
+</head>
+<body>
+  <h1>Region-aware marker clustering with aggregations</h1>
+  <p>Each circle displays properties-for-sale count and average (ficticious and random) property price in that cluster.<br/>
+     Green: less than 150k, Yellow: 150-200k, Red: 200-250k, Pink: over 250k<br/>
+     Judging by the red and pink circles, East and West coasts are most expensive.
+  </p>
+  <div class="map" id="map-us-clustered-regionbound-heuristichull"></div>
+  <script>
+    createMap('map-us-clustered-regionbound-heuristichull', regionLevels);
+  </script>
+  
+</body>
+</html>

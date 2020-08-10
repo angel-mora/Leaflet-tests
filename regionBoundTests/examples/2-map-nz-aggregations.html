@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>RegionBound Marker Clustering with Aggregations</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link rel="stylesheet" href="../dist/MarkerCluster.Default.css"/>
+  <link rel="stylesheet" href="../dist/MarkerCluster.css"/>
+  <link rel="stylesheet" href="../dist/MarkerCluster.Aggregations.css"/>
+
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src="../dist/leaflet.markercluster-regionbound.min.js"></script>
+  <script>
+    var urlTemplate = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png'
+    var attribution = '<a href="https://maps.wikimedia.org">Wikimedia maps</a> | Map data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contr.'
+
+    var locations = [
+      // An array of real-estate sales (in thousands of $$)
+      ["NI-1", -41.27, 174.62, "North Island", 793],
+      ["NI-2", -41.30, 175.84, "North Island", 240],
+      ["NI-3", -40.99, 174.99, "North Island", 399],
+      ["NI-4", -39.52, 176.00, "North Island", 289],
+      ["NI-5", -40.31, 176.66, "North Island", 550],
+      ["NI-6", -41.29, 174.63, "North Island", 575],
+      
+      ["SI-1", -41.10, 174.38, "South Island", 603],
+      ["SI-2", -41.62, 173.80, "South Island", 900],
+      ["SI-3", -42.17, 171.33, "South Island", 277],
+      ["SI-4", -40.93, 173.81, "South Island", 515],
+      ["SI-5", -42.92, 173.24, "South Island", 478],
+      ["SI-6", -41.58, 172.53, "South Island", 775],
+      ["SI-7", -42.01, 174.00, "South Island", 499],
+      ["SI-8", -41.21, 174.24, "South Island", 475]
+    ];
+
+    function createMap (mapId) {
+      var map = L.map(mapId).setView([-41.4, 174.4], 9);
+
+      L.tileLayer(urlTemplate, {attribution: attribution, minZoom: 1, maxZoom: 13}).addTo(map);
+
+      var clusterOptions = {
+        maxClusterRadius: 160,
+        addRegionToolTips: true,
+        allowClustersOfOne: false, // set this to true and observe the difference
+        clusterAggregationFunction: 'average', // or 'sum', 'minimum', 'maximum'
+        clusterAggregateRanges: {'small': 400, 'medium': 500, 'large': 600 },
+        clusterAggregatePrecision: 3
+      };
+
+      var clusterGroup = new L.MarkerClusterGroup(clusterOptions);
+      
+      for (var i = 0; i < locations.length; i++) {
+        var title     = locations[i][0];
+        var latitude  = locations[i][1];
+        var longitude = locations[i][2];
+        var region    = locations[i][3];
+        var saleValue = locations[i][4];
+        var markerOptions = {
+          title: title,
+          regions: ['Australasia', 'New Zealand', region],
+          aggregationValue: saleValue
+        };
+
+        var marker = new L.marker([latitude, longitude], markerOptions);
+
+        marker.bindPopup(title + ', ' + region + '<br/>sold for $ ' + saleValue + ',000');
+
+        clusterGroup.addLayer(marker);
+      }
+      map.addLayer(clusterGroup);
+      // Open the last marker's popup, just because we can.
+      marker.openPopup();
+    }
+  </script>
+  <style>
+    h1 {
+      text-align: center;
+    }
+    .map, .text {
+      float: left;
+      height: 600px;
+      width: 45%;
+      padding: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Region-aware marker clustering with aggregation</h1>
+  <div class="map" id="map-nz-regionbound-aggregated"></div>
+  <div class="text">
+    <p>
+      Each marker in this example represents a real estate sale, as you
+      can tell from the balloon that pops up when you click on an individual
+      marker.
+    </p>
+    <p>
+      As you zoom out and clusters are formed, the top number on each cluster
+      icon is the underlying marker count for the area covered. The bottom
+      number represents the result of the aggregation function set on this map.
+    </p>
+    <p>
+      In this example the aggregation function set is the <em>average</em> sale 
+      price of all locations in the cluster (in thousands)
+    </p>
+    <p>
+      Cluster colors reflect the size of the aggregation result, rather than
+      the size of the marker population count. Yellow means average sales price
+      in the area covered is between $400k and $500k, red between $500k and
+      $600k and magenta means over $600k.
+    </p>  
+    <p>
+      Now you can easily compare North Island vs. South Island prices.
+    </p>
+    <p>
+      Apart from <em>average</em> you can use <em>sum</em>, <em>minimum</em> and
+      <em>maximum</em>.<br/>
+      Or add your own!
+    </p>
+    <p>
+      <strong>Tip:</strong> in the source code set the <code><strong>allowClustersOfOne</strong></code> property
+      to <code><strong>true</strong></code> and observe the difference.
+    </p>
+  </div>
+  <script>
+    createMap('map-nz-regionbound-aggregated');
+  </script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Standard vs. Region-aware Marker Clustering</title>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+  <link rel="stylesheet" href=".././dist/MarkerCluster.Default.css"/>
+  <link rel="stylesheet" href=".././dist/MarkerCluster.css"/>
+
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
+  <script src=".././dist/leaflet.markercluster-regionbound.min.js"></script>
+  <script>
+    var urlTemplate = 'https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}@2x.png'
+    var attribution = '<a href="https://maps.wikimedia.org">Wikimedia maps</a> | Map data © <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contr.'
+
+    var locations = [
+      ["NI-1", -41.27, 174.62, "North Island"],
+      ["NI-2", -41.30, 175.84, "North Island"],
+      ["NI-3", -41.05, 174.99, "North Island"],
+      ["NI-4", -39.52, 176.00, "North Island"],
+      ["NI-5", -40.31, 176.66, "North Island"],
+      ["NI-6", -41.29, 174.63, "North Island"],
+
+      ["SI-1", -41.10, 174.38, "South Island"],
+      ["SI-2", -41.62, 173.80, "South Island"],
+      ["SI-3", -42.17, 171.33, "South Island"],
+      ["SI-4", -40.93, 173.81, "South Island"],
+      ["SI-5", -42.92, 173.24, "South Island"],
+      ["SI-6", -41.58, 172.53, "South Island"],
+      ["SI-7", -42.01, 174.00, "South Island"],
+      ["SI-8", -41.21, 174.24, "South Island"]
+    ];
+
+    function createMap (mapId, regionLevels) {
+      var map = L.map(mapId).setView([-41.4, 174.4], 8);
+
+      L.tileLayer(urlTemplate, {attribution: attribution, minZoom: 1, maxZoom: 13}).addTo(map);
+
+      var clusterOptions = regionLevels 
+        ? {maxClusterRadius: 160, addRegionToolTips: true, regionLevels: regionLevels}
+        : {maxClusterRadius: 160, addRegionToolTips: true};
+
+      var clusterGroup = new L.MarkerClusterGroup(clusterOptions);
+
+      for (var i = 0; i < locations.length; i++) {
+        var title     = locations[i][0];
+        var latitude  = locations[i][1];
+        var longitude = locations[i][2];
+        var region    = locations[i][3];
+        var markerOptions = {regions: ['Australasia', 'New Zealand', region], title: title};
+
+        var marker = new L.marker([latitude, longitude], markerOptions);
+
+        marker.bindPopup(title + ', ' + region);
+ 
+        clusterGroup.addLayer(marker);
+      }
+      map.addLayer(clusterGroup);
+    }
+  </script>
+  <style>
+    body {
+      text-align: center;
+    }
+    body > p {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .map {
+      width: 48%;
+      height: 600px;
+      margin: 1%;
+      float: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>Example of standard custering versus region-aware clustering</h1>
+  <p>
+    After refreshing the page, you'll notice by hovering over the cluser of 5
+    on the left map, that this cluster includes locations from both the South 
+    and North Islands, while itself being positioned in neither of the two.<br/>
+    That's confusing.<br/>
+    It is a result of the map on the left NOT being set up to be region-aware, 
+    whereas the one on the right is.<br/>
+    The map on the right will keep the clusters of the North and South Islands
+    apart at all zoom levels, until you zoom out far enough and reach the 
+    "country" level.
+<br/>
+  </p>
+  <div class="map" id="map-nz-clustered"></div>
+  <div class="map" id="map-nz-clustered-regionbound"></div>
+  <script>
+    // Left: standard clustering. Use an empty zoom-to-region levels array, to
+    // disable region-aware clustering.
+    createMap('map-nz-clustered', []);
+
+    // Right: Region-aware clustering. Using the default zoom-to-region levels.
+    createMap('map-nz-clustered-regionbound');
+  </script>
+</body>
+</html>
