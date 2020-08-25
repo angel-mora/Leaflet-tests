@@ -57,8 +57,9 @@
             var mymap = L.map('map', {
                 center: [22.78, -102.03],
                 zoom: 5,
-                layers: [light]
-            }); // , mcg = L.markerClusterGroup().disableClustering()
+                layers: [light] // mandatory to call baseMap variables for second time
+            }).addTo(mymap); // , mcg = L.markerClusterGroup().disableClustering()
+
 
         </script>
     </div>

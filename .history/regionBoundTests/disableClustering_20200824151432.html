@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disable Clustering Testing</title>
+
+    <!-- Leaflet CSS source stylesheet-->
+    <link rel="stylesheet" href="js/leaflet/leaflet.css" />
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="js/leaflet/leaflet.js"></script>
+    <!-- Leaflet AJAX script for Leaflet queries-->
+    <script src="js/leaflet/ajax/leaflet.ajax.min.js"></script>
+
+    <style>
+        #mapid {
+            height: 98vh;
+        }
+    </style>
+
+    <!-- Marker cluster CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+    
+    <!-- Marker cluster CDN -->
+    <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+
+    <!-- After Leaflet and Leaflet.markercluster scripts -->
+    <script src="js/leaflet/mcg/leaflet.markercluster.layersupport.js"></script>
+
+    <!-- After Leaflet and Leaflet.markercluster scripts -->
+    <script src="js/leaflet/freezable/leaflet.markercluster.freezable.js"></script>
+</head>
+<body>
+    <script>
+        // disable clustering at zoom
+        
+        // var map = L.map("mymap");
+        // L.tileLayer(...).addTo(map);
+        // var clusterGroup = new L.MarkerClusterGroup();
+
+        //  var marker1 = new L.marker([-37.8, 145], {regions: ["Asia-Pac", "Australia", "VIC", "Melbourne"]} );
+        // var marker2 = new L.marker([-33.9, 151], {regions: ["Asia-Pac", "Australia", "NSW", "Sydney"]} );
+
+        // clusterGroup.addLayer(marker1);
+        // clusterGroup.addLayer(marker2);
+        // map.addLayer(clusterGroup);
+
+
+    </script>
+</body>
+</html>
